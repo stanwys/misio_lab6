@@ -77,7 +77,7 @@ if __name__ == "__main__":
         # 'load' weights
         with open("weights.txt") as f:
             weights = [float(x) for x in f.readline().split()]
-        #weights = [-122.94814697340031, 20.499589680796387, 37.03635695606525, 17.89614773437804]
+        
         agent = PacQuiaoAgent(num_ghost_w=weights[0],
                               eats_food_w=weights[1],
                               scared_ghosts_w=weights[2],
