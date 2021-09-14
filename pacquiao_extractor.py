@@ -17,17 +17,11 @@ class PacQuiaoExtractor(FeatureExtractor):
     def getFeaturesAndFeatureState(self, state, action, actionToClosestFood):
         features = CustomCounter()
         num_ghosts_in_future_position, will_eat, scared_ghosts = self.calcFeatures(state, action)
-        #features["closest-ghost"] = 1.0 / closest_ghost if closest_ghost != 0 else self.max_func_value
         features["num-ghost-in-next-pos"] = num_ghosts_in_future_position * (1 - scared_ghosts)#if scared_ghosts == 0.0 else 0
         features["eats-food"] = will_eat
         features["scared-ghosts"] = scared_ghosts
         features["closest-food-direction"] = int(actionToClosestFood == action)
-        #features["closest-food"] = 1.0 / closest_food if closest_food != 0 else self.max_func_value
-        #features["freedom-degree"] = freedom_degree
-        #features["closest-capsule"] = 1.0 / closest_capsule if closest_capsule != 0 else self.max_func_value
-        #return (closest_food, num_ghosts_in_future_position, will_eat, scared_ghosts , action), features
-        #print(closest_food_direction,action,features["closest-food-direction"])
-
+        
         return ( num_ghosts_in_future_position, will_eat, scared_ghosts, actionToClosestFood, action), features
 
     def getFeatureState(self, state, action, actionToClosestFood):
@@ -44,20 +38,10 @@ class PacQuiaoExtractor(FeatureExtractor):
         current_food = state.getFood()
         walls = state.getWalls()
         capsule_positions = state.getCapsules()
-
-        #closest_ghost, closest_ghost_state = self.calcTraitsOfClosestGhost(pac_x, pac_y, ghost_states)
-        #scared_ghosts = self.willGhostsBeScared(pac_x,pac_y,capsule_positions, ghost_states)
-        #closest_ghost = min(self.upper_bound, closest_ghost)
+        
         num_ghosts_in_future_position = sum((pac_x, pac_y) in Actions.getLegalNeighbors(g, walls) for g in ghost_positions)
         will_eat = self.will_eat_reward if current_food[pac_x][pac_y] == True else 0.0
         ratio_scared_ghosts = self.calcRatioScaredGhosts(ghost_states)
-
-        # closest_food, closest_food_position = self.calcShortestDistanceFromFood(pac_x, pac_y, current_food)
-        # closest_capsule = self.calcShortestDistanceFromObject(pac_x, pac_y, capsule_positions)
-        # closest_food = min(self.upper_bound, closest_food)
-        #closest_capsule = min(self.upper_bound, closest_capsule)
-        # num_food = self.calcNumFoodInCloseArea(pac_x, pac_y, current_food)
-        #freedom_degree = len(Actions.getLegalNeighbors((pac_x,pac_y), walls))
 
         return num_ghosts_in_future_position, will_eat, ratio_scared_ghosts
 
